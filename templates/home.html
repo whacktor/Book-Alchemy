@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Meine Bibliothek</title>
+</head>
+
+<body>
+
+  <h1>📚 Meine Bibliothek</h1>
+
+  <p>
+    <a href="{{ url_for('add_author') }}">Autor hinzufügen</a> |
+    <a href="{{ url_for('add_book') }}">Buch hinzufügen</a>
+  </p>
+
+  <!-- ===================== -->
+  <!-- FLASH MESSAGES -->
+  <!-- ===================== -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <ul>
+        {% for category, msg in messages %}
+          <li><strong>{{ category }}:</strong> {{ msg }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <hr>
+
+  <!-- ===================== -->
+  <!-- SUCHFORMULAR -->
+  <!-- ===================== -->
+  <form method="GET" action="{{ url_for('home') }}">
+    <input
+      type="text"
+      name="q"
+      placeholder="Titel, Autor oder ISBN suchen..."
+      value="{{ q }}"
+    >
+    <button type="submit">Search</button>
+
+    <!-- aktuelle Sortierung behalten -->
+    <input type="hidden" name="sort" value="{{ sort }}">
+    <input type="hidden" name="dir" value="{{ direction }}">
+  </form>
+
+  {% if q %}
+    <p>
+      Suche nach: <strong>{{ q }}</strong>
+      (<a href="{{ url_for('home', sort=sort, dir=direction) }}">Suche löschen</a>)
+    </p>
+  {% endif %}
+
+  {% if message %}
+    <p><strong>{{ message }}</strong></p>
+  {% endif %}
+
+  <hr>
+
+  <!-- ===================== -->
+  <!-- SORTIERUNG -->
+  <!-- ===================== -->
+  <form method="GET" action="{{ url_for('home') }}">
+    <label>Sortieren nach:</label>
+
+    <select name="sort">
+      <option value="title" {% if sort == 'title' %}selected{% endif %}>
+        Titel
+      </option>
+      <option value="author" {% if sort == 'author' %}selected{% endif %}>
+        Autor
+      </option>
+    </select>
+
+    <select name="dir">
+      <option value="asc" {% if direction == 'asc' %}selected{% endif %}>
+        A → Z
+      </option>
+      <option value="desc" {% if direction == 'desc' %}selected{% endif %}>
+        Z → A
+      </option>
+    </select>
+
+    {% if q %}
+      <input type="hidden" name="q" value="{{ q }}">
+    {% endif %}
+
+    <button type="submit">Sortieren</button>
+  </form>
+
+  <hr>
+
+  <!-- ===================== -->
+  <!-- BÜCHERLISTE -->
+  <!-- ===================== -->
+  {% if books %}
+
+    <ul style="list-style:none; padding:0;">
+
+      {% for book in books %}
+        <li style="margin-bottom:25px; border-bottom:1px solid #ddd; padding-bottom:10px;">
+
+          <!-- Cover -->
+          <img
+            src="https://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg"
+            alt="Cover"
+            style="height:120px; vertical-align:middle; margin-right:10px;"
+            onerror="this.style.display='none'"
+          >
+
+          <strong>{{ book.title }}</strong>
+          — {{ book.author.name }}
+
+          {% if book.publication_year %}
+            ({{ book.publication_year }})
+          {% endif %}
+
+          <br>
+          <small>ISBN: {{ book.isbn }}</small>
+
+          <!-- ===================== -->
+          <!-- DELETE BUTTON -->
+          <!-- ===================== -->
+          <form
+            method="POST"
+            action="{{ url_for('delete_book', book_id=book.id) }}"
+            style="margin-top:8px;"
+            onsubmit="return confirm('Buch wirklich löschen?');"
+          >
+            <button type="submit">❎ Buch löschen</button>
+          </form>
+
+        </li>
+      {% endfor %}
+
+    </ul>
+
+  {% else %}
+    <p>Keine Bücher vorhanden.</p>
+  {% endif %}
+
+</body>
+</html>
