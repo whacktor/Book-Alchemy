@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 import os
 from datetime import datetime
+from sqlalchemy import or_
 from data_models import db, Author, Book
 
 app = Flask(__name__)
@@ -9,12 +10,10 @@ basedir = os.path.abspath(os.path.dirname(__file__))
 app.config["SQLALCHEMY_DATABASE_URI"] = f"sqlite:///{os.path.join(basedir, 'data', 'library.sqlite')}"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
-# nötig für flash()
 app.config["SECRET_KEY"] = "dev-secret-key-change-me"
 
 db.init_app(app)
 
-# falls noch nicht gemacht: Tabellen erstellen (einmalig)
 with app.app_context():
     db.create_all()
 
@@ -37,7 +36,6 @@ def home():
             )
         )
 
-
     if sort == "author":
         order_col = Author.name
     else:
@@ -48,7 +46,7 @@ def home():
 
     message = None
     if q and not books:
-        message = f"Keine Bücher gefunden für: “{q}”"
+        message = f'Keine Bücher gefunden für: "{q}"'
 
     return render_template(
         "home.html",
@@ -70,7 +68,6 @@ def add_author():
         if not name:
             flash("Bitte einen Namen eingeben.", "error")
             return render_template("add_author.html")
-
 
         birth_date = None
         date_of_death = None
@@ -102,6 +99,7 @@ def add_author():
 
     return render_template("add_author.html")
 
+
 @app.route("/add_book", methods=["GET", "POST"])
 def add_book():
     authors = Author.query.order_by(Author.name.asc()).all()
@@ -116,16 +114,22 @@ def add_book():
             flash("Bitte ISBN, Titel und Autor auswählen.", "error")
             return render_template("add_book.html", authors=authors)
 
-        # optional: ISBN eindeutigkeit freundlich abfangen
         if Book.query.filter_by(isbn=isbn).first():
             flash("Diese ISBN existiert bereits.", "error")
+            return render_template("add_book.html", authors=authors)
+
+        try:
+            publication_year_value = int(publication_year) if publication_year else None
+            author_id_value = int(author_id)
+        except ValueError:
+            flash("Ungültige Eingabe bei Erscheinungsjahr oder Autor.", "error")
             return render_template("add_book.html", authors=authors)
 
         book = Book(
             isbn=isbn,
             title=title,
-            publication_year=int(publication_year) if publication_year else None,
-            author_id=int(author_id),
+            publication_year=publication_year_value,
+            author_id=author_id_value,
         )
 
         db.session.add(book)
@@ -139,7 +143,6 @@ def add_book():
 @app.route("/book/<int:book_id>/delete", methods=["POST"])
 def delete_book(book_id):
     book = Book.query.get_or_404(book_id)
-
     author = book.author
 
     db.session.delete(book)
