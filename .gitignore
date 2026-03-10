@@ -1,0 +1,50 @@
+---
+
+# .gitignore
+
+```gitignore
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtuelle Umgebungen
+.venv/
+venv/
+env/
+ENV/
+
+# Flask
+instance/
+.webassets-cache/
+
+# Datenbanken
+*.db
+*.sqlite3
+# vorhandene Projekt-Datenbank bewusst behalten:
+# !data/library.sqlite
+
+# IDEs / Editor
+.vscode/
+.idea/
+
+# Betriebssystemdateien
+.DS_Store
+Thumbs.db
+
+# Test / Coverage
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Build / Packaging
+build/
+dist/
+*.egg-info/
+
+# Logs
+*.log
+
+# Umgebungsdateien
+.env
+.env.*
