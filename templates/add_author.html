@@ -21,13 +21,23 @@
       </div>
 
       <div>
-        <label>Geburtsdatum (YYYY-MM-DD)</label><br>
-        <input type="text" name="birth_date" placeholder="z.B. 1815-12-10">
+        <label>Geburtsdatum (TT.MM.JJJJ)</label><br>
+        <input
+          type="text"
+          name="birth_date"
+          placeholder="z.B. 10.12.1815"
+          pattern="\d{2}\.\d{2}\.\d{4}"
+        >
       </div>
 
       <div>
-        <label>Sterbedatum (YYYY-MM-DD)</label><br>
-        <input type="text" name="date_of_death" placeholder="z.B. 1852-11-27">
+        <label>Sterbedatum (TT.MM.JJJJ)</label><br>
+        <input
+          type="text"
+          name="date_of_death"
+          placeholder="z.B. 27.11.1852"
+          pattern="\d{2}\.\d{2}\.\d{4}"
+        >
       </div>
 
       <button type="submit">Speichern</button>
