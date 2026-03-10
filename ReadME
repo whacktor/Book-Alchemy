@@ -1,0 +1,72 @@
+# Bibliotheksverwaltung mit Flask
+
+Eine kleine Flask-Webanwendung zur Verwaltung von Autor:innen und Büchern mit SQLite und SQLAlchemy.
+
+## Funktionen
+
+- Startseite mit Buchübersicht
+- Suche nach:
+  - Buchtitel
+  - ISBN
+  - Autor:innenname
+- Sortierung nach:
+  - Titel
+  - Autor:in
+- Autor:innen hinzufügen
+- Bücher hinzufügen
+- Bücher löschen
+- Automatisches Entfernen von Autor:innen, wenn nach dem Löschen keine Bücher mehr zugeordnet sind
+- Flash-Meldungen für Erfolge und Fehler
+
+## Projektstruktur
+
+
+.
+├── app.py
+├── data_models.py
+├── templates/
+│ ├── home.html
+│ ├── add_author.html
+│ └── add_book.html
+└── data/
+└── library.sqlite
+
+
+## Verwendete Technologien
+
+- Python
+- Flask
+- Flask-SQLAlchemy
+- SQLite
+
+## Voraussetzungen
+
+Empfohlen wird Python 3.10 oder neuer.
+
+## Installation
+
+1. Repository klonen oder Projektordner öffnen
+2. Virtuelle Umgebung erstellen und aktivieren
+3. Abhängigkeiten installieren
+
+### Beispiel unter Windows
+
+```bash
+python -m venv .venv
+.venv\Scripts\activate
+pip install flask flask-sqlalchemy
+Beispiel unter macOS / Linux
+python3 -m venv .venv
+source .venv/bin/activate
+pip install flask flask-sqlalchemy
+Anwendung starten
+python app.py
+
+Die App läuft dann standardmäßig unter:
+
+http://127.0.0.1:5002
+Datenbank
+
+Die SQLite-Datenbank liegt hier:
+
+data/library.sqlite
